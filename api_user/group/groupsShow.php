@@ -3,7 +3,7 @@ include "../connection.php";
 
 $userId = $_POST["user_id"];
 
-$sqlQuery2 = "SELECT * FROM user_group WHERE user_id = $userId";
+$sqlQuery2 = "SELECT * FROM user_group WHERE user_id = '$userId'";
 
 $resultOfQuery2 = $connectNow->query($sqlQuery2);
 

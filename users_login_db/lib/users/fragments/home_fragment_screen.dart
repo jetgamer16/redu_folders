@@ -4,15 +4,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:users_login_db/users/fragments/dashboard_of_fragments.dart';
-import 'package:users_login_db/users/fragments/favorites_fragment_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:users_login_db/api/api_connection.dart';
+import 'package:users_login_db/users/fragments/tasks_screen.dart';
 import 'package:users_login_db/users/model/group.dart';
 import 'package:users_login_db/users/userPreferences/current_user.dart';
 
 class HomeFragmentScreen extends StatelessWidget {
-  final CurrentUser _currentUser = Get.put(CurrentUser());
+  late CurrentUser _currentUser = Get.put(CurrentUser());
   late List<Group> grupos = [];
 
   Future<dynamic> getData(int idUser) async {
@@ -60,7 +59,7 @@ class HomeFragmentScreen extends StatelessWidget {
           return Scaffold(
               body: Column(
             children: <Widget>[
-              for (var i = 0; i < grupos.length; i++) cuadro(grupos[i])
+              for (var i = 0; i < grupos.length; i++) cuadro(grupos[i], context)
             ],
           ));
         }),
@@ -69,7 +68,7 @@ class HomeFragmentScreen extends StatelessWidget {
   }
 }
 
-Widget cuadro(Group grupo) {
+Widget cuadro(Group grupo, context) {
   return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
@@ -79,7 +78,10 @@ Widget cuadro(Group grupo) {
           width: double.infinity,
           height: 100,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              var idGroupString = grupo.id.toString();
+              Navigator.push(context, MaterialPageRoute(builder: (context) => TasksScreen(idGroup: idGroupString)));
+            },
             child: Text(
               grupo.name,
               style: TextStyle(
