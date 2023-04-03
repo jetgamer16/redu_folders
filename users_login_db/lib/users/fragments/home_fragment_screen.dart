@@ -15,11 +15,12 @@ class HomeFragmentScreen extends StatelessWidget {
   final CurrentUser _currentUser = Get.put(CurrentUser());
   late List<Group> grupos = [];
 
-  Future<dynamic> getData() async {
+  Future<dynamic> getData(int idUser) async {
+    var idUserString = idUser.toString();
     var res = await http.post(
       Uri.parse(API.groups),
       body: {
-        "user_id": "12",
+        "user_id": idUserString,
       },
     );
     return res;
@@ -27,7 +28,10 @@ class HomeFragmentScreen extends StatelessWidget {
 
   Future<void> showGroups() async {
     try {
-      var res = await getData();
+
+      int idUser = _currentUser.user.user_id;
+
+      var res = await getData(idUser);
 
       if (res.statusCode == 200) {
         var data = jsonDecode(res.body);
@@ -48,6 +52,7 @@ class HomeFragmentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    grupos = [];
     return Center(
       child: FutureBuilder(
         future: showGroups(),
