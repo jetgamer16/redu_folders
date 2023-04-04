@@ -1,53 +1,158 @@
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:http/http.dart' as http;
+import 'package:users_login_db/api/api_connection.dart';
+import 'package:users_login_db/users/model/taskAlumn.dart';
+import 'package:users_login_db/users/userPreferences/current_user.dart';
 
-class TaskForm extends StatelessWidget {
+class TaskForm extends StatefulWidget {
 
-  TextEditingController caption = TextEditingController();
+  final int idTask;
 
-  File? imagePath;
-  String? imageName;
-  String? imageData;
+  const TaskForm({super.key, required this.idTask});
 
-  ImagePicker imagePicker = new ImagePicker();
+  @override
+  _TaskFormState createState() => _TaskFormState();
+}
 
-  Future<void> getImage() async {
-    var getImage = await imagePicker.pickImage(source: ImageSource.gallery);
-    imagePath = File(getImage!.path);
-    print(imagePath);
+class _TaskFormState extends State<TaskForm> {
+  late CurrentUser _currentUser = Get.put(CurrentUser());
+  final _formKey = GlobalKey<FormState>();
+  late String _name;
+  late String _description;
+  late File _imgFile;
+  late String? _imageFile ='';
+
+  saveTaskAlumn() async {
+    if (_formKey.currentState!.validate()) {
+      int idUser = _currentUser.user.user_id;
+      TaskAlumn task =
+      TaskAlumn(
+        1,
+        _name,
+        _description,
+        _imageFile!,
+        idUser,
+        2,
+        0,
+        ""
+      );
+      print(task.name);
+      print(task.description);
+      print(task.img);
+
+      try{
+
+      var res = await http.post(
+        Uri.parse(API.tasksAlumnSave),
+        body: task.toJson(),
+      );
+
+      if(res.statusCode == 200) {
+        print(res.body);
+        var resStudentTask = await jsonDecode(jsonEncode(res.body));
+
+        if(resStudentTask == 'success') {
+          Fluttertoast.showToast(msg: "Task Created Successfully");
+          setState(() {
+            _name="";
+            _description="";
+            _imageFile="";
+          });
+          
+        } else {
+          Fluttertoast.showToast(msg: "Error ocurred. Try Again");
+        }
+      }
+
+    } catch(e) {
+      print(e.toString());
+      Fluttertoast.showToast(msg: e.toString());
+    }
+    }
+  }
+
+  _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+    setState(() {
+      _imgFile = File(pickedFile!.path);
+      _imageFile = _imgFile.path;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-                title: const Text("Tasks"),
-                automaticallyImplyLeading: false,
-                leading: IconButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
+        title: const Text('Create Task'),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Name',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter a name';
+                    }
+                    return null;
                   },
-                  icon: const Icon(Icons.arrow_back),
+                  onChanged: (value) {
+                    setState(() {
+                      _name = value;
+                    });
+                  },
                 ),
-              ),
-      body: Column(children: [
-        SizedBox(height: 20,),
-        TextFormField(
-          controller: caption,
-          decoration: InputDecoration(border: OutlineInputBorder(),
-          label: Text('Enter the caption')
-          ), 
+                SizedBox(height: 16.0),
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Description',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter a description';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      _description = value;
+                    });
+                  },
+                ),
+                SizedBox(height: 16.0),
+                Center(
+                  child: GestureDetector(
+                    onTap: _pickImage,
+                      child: Icon(Icons.camera_alt),
+                    ),
+                  ),
+                SizedBox(height: 16.0),
+                ElevatedButton(
+                  onPressed: saveTaskAlumn,
+                  child: Text('Create'),
+                ),
+              ],
+            ),
+          ),
         ),
-        SizedBox(height: 20,),
-        Image.file(imagePath!),
-        SizedBox(height: 20,),
-        ElevatedButton(onPressed: (){
-          getImage();
-        }, child: Text('Chose Image')),
-        ElevatedButton(onPressed: (){}, child: Text('Upload')),
-      ],)
+      ),
     );
   }
 }

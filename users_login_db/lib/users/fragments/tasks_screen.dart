@@ -89,7 +89,8 @@ Widget cuadro(Task task, context) {
           height: 200,
           child: ElevatedButton(
             onPressed: () {
-              Get.to(TaskForm());
+              var idTaskString = task.id;
+              Navigator.push(context, MaterialPageRoute(builder: (context) => TaskForm(idTask: idTaskString)));
             },
             child: ListView(
               padding: EdgeInsets.symmetric(vertical: 8),

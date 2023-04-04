@@ -7,4 +7,5 @@ class API {
   static const login = "$hostConnect/user/login.php";
   static const groups = "$hostConnect/group/groupsShow.php";
   static const tasks = "$hostConnect/task/tasksShow.php";
+  static const tasksAlumnSave = "$hostConnect/task/alumnTaskSave.php";
 }
