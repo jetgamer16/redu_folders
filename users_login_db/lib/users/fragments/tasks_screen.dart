@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:users_login_db/api/api_connection.dart';
+import 'package:users_login_db/users/fragments/task_form.dart';
 import 'package:users_login_db/users/model/task.dart';
 import 'package:users_login_db/users/userPreferences/current_user.dart';
 import 'package:http/http.dart' as http;
@@ -64,14 +65,6 @@ class TasksScreen extends StatelessWidget {
                   },
                   icon: const Icon(Icons.arrow_back),
                 ),
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                      debugPrint("Actions");
-                    },
-                    icon: const Icon(Icons.info_outline),
-                  ),
-                ],
               ),
               body: Column(
                 children: <Widget>[
@@ -96,12 +89,7 @@ Widget cuadro(Task task, context) {
           height: 200,
           child: ElevatedButton(
             onPressed: () {
-              var idGroupString = task.id.toString();
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          TasksScreen(idGroup: idGroupString)));
+              Get.to(TaskForm());
             },
             child: ListView(
               padding: EdgeInsets.symmetric(vertical: 8),

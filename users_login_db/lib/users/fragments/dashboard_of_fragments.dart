@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:users_login_db/users/fragments/favorites_fragment_screen.dart';
+import 'package:users_login_db/users/fragments/checked_fragment_screen.dart';
 import 'package:users_login_db/users/fragments/home_fragment_screen.dart';
 import 'package:users_login_db/users/fragments/order_fragment_screen.dart';
 import 'package:users_login_db/users/fragments/profile_fragment_screen.dart';
@@ -12,7 +12,7 @@ class DashboardOfFragments extends StatelessWidget {
 
   List<Widget> _fragmentScreens = [
     HomeFragmentScreen(),
-    FavoritesFragmentScreen(),
+    MadeFragmentScreen(),
     OrderFragmentScreen(),
     ProfileFragmentScreen()
   ];
@@ -24,9 +24,9 @@ class DashboardOfFragments extends StatelessWidget {
       "label": "Home",
     },
     {
-      "active_icon": Icons.favorite,
-      "non_active_icon": Icons.favorite_border,
-      "label": "Favourite",
+      "active_icon": Icons.check_circle,
+      "non_active_icon": Icons.check,
+      "label": "Check",
     },
     {
       "active_icon": FontAwesomeIcons.boxOpen,
