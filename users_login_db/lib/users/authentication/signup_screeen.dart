@@ -89,6 +89,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             emailController.clear();
             passwordController.clear();
           });
+          Get.to(LoginScreeen());
         } else {
           Fluttertoast.showToast(msg: "Error ocurred. Try Again");
         }

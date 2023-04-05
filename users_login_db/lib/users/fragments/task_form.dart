@@ -8,6 +8,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:http/http.dart' as http;
 import 'package:users_login_db/api/api_connection.dart';
+import 'package:users_login_db/users/fragments/dashboard_of_fragments.dart';
 import 'package:users_login_db/users/model/taskAlumn.dart';
 import 'package:users_login_db/users/userPreferences/current_user.dart';
 
@@ -39,13 +40,10 @@ class _TaskFormState extends State<TaskForm> {
         _description,
         _imageFile!,
         idUser,
-        2,
+        widget.idTask,
         0,
         ""
       );
-      print(task.name);
-      print(task.description);
-      print(task.img);
 
       try{
 
@@ -65,6 +63,8 @@ class _TaskFormState extends State<TaskForm> {
             _description="";
             _imageFile="";
           });
+
+          Get.to(DashboardOfFragments());
           
         } else {
           Fluttertoast.showToast(msg: "Error ocurred. Try Again");

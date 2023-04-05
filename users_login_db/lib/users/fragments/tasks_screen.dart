@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 class TasksScreen extends StatelessWidget {
   late CurrentUser _currentUser = Get.put(CurrentUser());
   late List<Task> tasks = [];
+  late List<dynamic> taskRealized = [];
 
   final String idGroup;
 
@@ -22,6 +23,7 @@ class TasksScreen extends StatelessWidget {
       Uri.parse(API.tasks),
       body: {
         "group_id": idGroup,
+        "user_id": _currentUser.user.user_id.toString()
       },
     );
     return res;
@@ -34,6 +36,8 @@ class TasksScreen extends StatelessWidget {
       if (res.statusCode == 200) {
         var data = jsonDecode(res.body);
 
+        taskRealized = data["taskId"];
+
         if (data["success"] == true) {
           for (var i = 0; i < data["tasksData"].length; i++) {
             Task task = Task.fromJson(data["tasksData"][i]);
@@ -45,6 +49,24 @@ class TasksScreen extends StatelessWidget {
       }
     } catch (e) {
       print("Error :: " + e.toString());
+    }
+  }
+
+  findItem(int id) {
+    for(int i = 0; i < taskRealized.length; i++) {
+      if(int.parse(taskRealized[i]) == id) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  dateBefore(DateTime date) {
+    DateTime now = new DateTime.now();
+    if(now.isAfter(date)) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -66,11 +88,20 @@ class TasksScreen extends StatelessWidget {
                   icon: const Icon(Icons.arrow_back),
                 ),
               ),
-              body: Column(
-                children: <Widget>[
+              resizeToAvoidBottomInset: false,
+              body: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
                   for (var i = 0; i < tasks.length; i++)
-                    cuadro(tasks[i], context)
+                    if(dateBefore(tasks[i].date_end))
+                      cuadro3(tasks[i], context)
+                    else
+                      if(findItem(tasks[i].id))
+                        cuadro2(tasks[i], context)
+                      else
+                        cuadro(tasks[i], context)
                 ],
+                ),
               ));
         }),
       ),
@@ -78,12 +109,99 @@ class TasksScreen extends StatelessWidget {
   }
 }
 
+Widget cuadro3(Task task, context) {
+  return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        Container(
+          color: Colors.red,
+          margin: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(10.0),
+          width: double.infinity,
+          height: 200,
+          child: ElevatedButton(
+            onPressed: () {
+              Fluttertoast.showToast(msg: "Task not Realized");
+            },
+            child: ListView(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              children: [
+                Text(
+                  task.title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 25, color: Color.fromARGB(255, 255, 255, 255)),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  task.description,
+                  style: TextStyle(
+                      fontSize: 15, color: Color.fromARGB(255, 255, 255, 255)),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  task.date_end.toString().substring(0, 10),
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                      fontSize: 20, color: Color.fromARGB(255, 255, 255, 255)),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ]);
+}
+
+Widget cuadro2(Task task, context) {
+  return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        Container(
+          color: Colors.green,
+          margin: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(10.0),
+          width: double.infinity,
+          height: 200,
+          child: ElevatedButton(
+            onPressed: () {
+              Fluttertoast.showToast(msg: "Task realized");
+            },
+            child: ListView(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              children: [
+                Text(
+                  task.title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 25, color: Color.fromARGB(255, 255, 255, 255)),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  task.description,
+                  style: TextStyle(
+                      fontSize: 15, color: Color.fromARGB(255, 255, 255, 255)),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  task.date_end.toString().substring(0, 10),
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                      fontSize: 20, color: Color.fromARGB(255, 255, 255, 255)),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ]);
+}
+
 Widget cuadro(Task task, context) {
   return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         Container(
-          margin: const EdgeInsets.all(10.0),
+          color: Colors.yellow,
+          margin: const EdgeInsets.all(20.0),
           padding: const EdgeInsets.all(10.0),
           width: double.infinity,
           height: 200,
