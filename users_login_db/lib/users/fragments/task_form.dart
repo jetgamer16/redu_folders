@@ -57,6 +57,20 @@ class _TaskFormState extends State<TaskForm> {
         var resStudentTask = await jsonDecode(jsonEncode(res.body));
 
         if(resStudentTask == 'success') {
+
+          final uri = Uri.parse(API.imageSave);
+          var request = http.MultipartRequest('POST', uri);
+          request.fields['name'] = 'hola';
+          var pic = await http.MultipartFile.fromPath("image", _imgFile.path);
+          request.files.add(pic);
+          var response = await request.send();
+
+          if(response.statusCode == 200) {
+            print('image Uploaded');
+          } else {
+            print('image not Uploaded');
+          }
+
           Fluttertoast.showToast(msg: "Task Created Successfully");
           setState(() {
             _name="";
@@ -85,6 +99,22 @@ class _TaskFormState extends State<TaskForm> {
       _imgFile = File(pickedFile!.path);
       _imageFile = _imgFile.path;
     });
+  }
+
+  Future uploadImage() async {
+    final uri = Uri.parse(API.imageSave);
+    var request = http.MultipartRequest('POST', uri);
+    request.fields['name'] = 'hola';
+    var pic = await http.MultipartFile.fromPath("image", _imgFile.path);
+    request.files.add(pic);
+    var response = await request.send();
+
+    if(response.statusCode == 200) {
+      print('image Uploaded');
+    } else {
+      print('image not Uploaded');
+    }
+
   }
 
   @override
