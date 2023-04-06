@@ -4,7 +4,7 @@ include '../connection.php';
 
 $userEmail = $_POST['user_email'];
 
-$sqlQuery = "SELECT * FROM user_table WHERE user_email = '$userEmail'";
+$sqlQuery = "SELECT * FROM users WHERE email = '$userEmail'";
 
 $resultOfQuery = $connectNow->query($sqlQuery);
 

@@ -32,7 +32,7 @@ class _TaskFormState extends State<TaskForm> {
 
   saveTaskAlumn() async {
     if (_formKey.currentState!.validate()) {
-      int idUser = _currentUser.user.user_id;
+      int idUser = _currentUser.user.id;
       TaskAlumn task =
       TaskAlumn(
         1,
@@ -60,7 +60,7 @@ class _TaskFormState extends State<TaskForm> {
 
           final uri = Uri.parse(API.imageSave);
           var request = http.MultipartRequest('POST', uri);
-          request.fields['name'] = 'hola';
+          request.fields['id'] = widget.idTask.toString();
           var pic = await http.MultipartFile.fromPath("image", _imgFile.path);
           request.files.add(pic);
           var response = await request.send();

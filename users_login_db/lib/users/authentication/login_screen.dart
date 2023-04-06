@@ -52,16 +52,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       if (res.statusCode == 200) {
         var data = jsonDecode(res.body);
 
-        print(data);
-
         if (data["success"] == true) {
           Fluttertoast.showToast(msg: "Login Successfully");
+          print(data["userData"]);
           User userInfo = User.fromJson(data["userData"]);
           await RememberUserPrefs.storeUserInfo(userInfo);
 
-          Future.delayed(Duration(milliseconds: 2000), () {
-            Get.to(DashboardOfFragments());
-          });
+          Get.to(DashboardOfFragments());
+          
         } else {
           Fluttertoast.showToast(
               msg: "Writte correct password or email. Try Again");

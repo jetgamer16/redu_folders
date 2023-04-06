@@ -23,7 +23,7 @@ class TasksScreen extends StatelessWidget {
       Uri.parse(API.tasks),
       body: {
         "group_id": idGroup,
-        "user_id": _currentUser.user.user_id.toString()
+        "user_id": _currentUser.user.id.toString()
       },
     );
     return res;

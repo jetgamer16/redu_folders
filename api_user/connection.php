@@ -2,6 +2,6 @@
 $serverHost = "localhost";
 $user = "root";
 $password = "";
-$database = "phone_redu";
+$database = "redu";
 
 $connectNow = new mysqli($serverHost, $user, $password, $database);

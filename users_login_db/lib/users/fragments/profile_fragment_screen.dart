@@ -84,11 +84,11 @@ class ProfileFragmentScreen extends StatelessWidget {
         const SizedBox(
           height: 20,
         ),
-        userInfoItemProfile(Icons.person, _currentUser.user.user_name),
+        userInfoItemProfile(Icons.person, _currentUser.user.name),
         const SizedBox(
           height: 20,
         ),
-        userInfoItemProfile(Icons.email, _currentUser.user.user_email),
+        userInfoItemProfile(Icons.email, _currentUser.user.email),
         const SizedBox(
           height: 20,
         ),

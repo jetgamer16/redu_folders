@@ -28,7 +28,7 @@ class HomeFragmentScreen extends StatelessWidget {
   Future<void> showGroups() async {
     try {
 
-      int idUser = _currentUser.user.user_id;
+      int idUser = _currentUser.user.id;
 
       var res = await getData(idUser);
 

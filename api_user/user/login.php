@@ -5,7 +5,7 @@ include '../connection.php';
 $userEmail = $_POST['user_email'];
 $userPassword = md5($_POST['user_password']);
 
-$sqlQuery = "SELECT * FROM user_table WHERE user_email = '$userEmail' AND user_password = '$userPassword'";
+$sqlQuery = "SELECT * FROM users WHERE email = '$userEmail' AND password = '$userPassword'";
 
 $resultOfQuery = $connectNow->query($sqlQuery);
 

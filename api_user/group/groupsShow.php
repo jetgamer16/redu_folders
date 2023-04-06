@@ -18,7 +18,7 @@ if($resultOfQuery2->num_rows > 0) {
 $groupsUser = [];
 
 foreach($groups as $group) {
-    $sqlQuery = "SELECT * FROM groups WHERE id = ".$group['group_id'];
+    $sqlQuery = "SELECT * FROM groups WHERE id = ".$group['groups_id'];
     $resultOfQuery = $connectNow->query($sqlQuery);
     while($rowFound = $resultOfQuery->fetch_assoc()) {
         $groupsUser[] = $rowFound;

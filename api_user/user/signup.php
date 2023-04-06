@@ -1,11 +1,13 @@
 <?php
 include "../connection.php";
 
-$userName = $_POST["user_name"];
-$userEmail = $_POST["user_email"];
-$userPassword = md5($_POST["user_password"]);
+$userName = $_POST["name"];
+$userEmail = $_POST["email"];
+$userPassword = md5($_POST["password"]);
+$now = Date("Y-m-d H:i:s");
 
-$sqlQuery = "INSERT INTO user_table SET user_name = '$userName', user_email = '$userEmail', user_password = '$userPassword'";
+$sqlQuery = "INSERT INTO users SET name = '$userName', email = '$userEmail', password = '$userPassword', rol = 'alumn', created_at = '$now', updated_at = '$now'";
+
 
 $resultOfQuery = $connectNow->query($sqlQuery);
 
