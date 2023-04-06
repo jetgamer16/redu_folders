@@ -54,13 +54,17 @@ class _TaskFormState extends State<TaskForm> {
 
       if(res.statusCode == 200) {
         print(res.body);
-        var resStudentTask = await jsonDecode(jsonEncode(res.body));
+        var resStudentTask = await jsonDecode(res.body);
 
-        if(resStudentTask == 'success') {
+        if(resStudentTask['success'] == true) {
+
+          String data = resStudentTask['task'][0]['id'];
+
+          print(data);
 
           final uri = Uri.parse(API.imageSave);
           var request = http.MultipartRequest('POST', uri);
-          request.fields['id'] = widget.idTask.toString();
+          request.fields['id'] = data;
           var pic = await http.MultipartFile.fromPath("image", _imgFile.path);
           request.files.add(pic);
           var response = await request.send();
@@ -99,22 +103,6 @@ class _TaskFormState extends State<TaskForm> {
       _imgFile = File(pickedFile!.path);
       _imageFile = _imgFile.path;
     });
-  }
-
-  Future uploadImage() async {
-    final uri = Uri.parse(API.imageSave);
-    var request = http.MultipartRequest('POST', uri);
-    request.fields['name'] = 'hola';
-    var pic = await http.MultipartFile.fromPath("image", _imgFile.path);
-    request.files.add(pic);
-    var response = await request.send();
-
-    if(response.statusCode == 200) {
-      print('image Uploaded');
-    } else {
-      print('image not Uploaded');
-    }
-
   }
 
   @override

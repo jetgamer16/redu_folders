@@ -14,8 +14,28 @@ $sqlQuery = "INSERT INTO student_tasks SET name = '$name', description = '$descr
 
 $resultOfQuery = $connectNow->query($sqlQuery);
 
+$task = [];
+
 if($resultOfQuery) {
-    echo 'success';
+
+    $sqlQuery2 = "SELECT * FROM student_tasks WHERE name = '$name' AND student_id = $student_id AND task_id = $task_id";
+
+    $resultOfQuery2 = $connectNow->query($sqlQuery2);
+
+    while($rowFound = $resultOfQuery2->fetch_assoc()) {
+        $task[] = $rowFound;
+    }
+    echo json_encode(
+        array(
+            'success' => true,
+            'task' => $task
+        )
+    );
+
 } else {
-    echo 'notSuccess';
+    echo json_encode(
+        array(
+            'success' => false
+        )
+    );
 }
