@@ -109,7 +109,9 @@ class _TaskFormState extends State<TaskForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Task'),
+        backgroundColor: Colors.green.shade500,
+        centerTitle: true,
+        title: const Text('Make Task'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -121,12 +123,12 @@ class _TaskFormState extends State<TaskForm> {
               children: [
                 TextFormField(
                   decoration: InputDecoration(
-                    labelText: 'Name',
+                    labelText: 'Title',
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return 'Please enter a name';
+                      return 'Please enter a Title';
                     }
                     return null;
                   },
@@ -163,8 +165,14 @@ class _TaskFormState extends State<TaskForm> {
                   ),
                 SizedBox(height: 16.0),
                 ElevatedButton(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.black,backgroundColor: Colors.green.shade500, side: BorderSide(width: 2,
+                      color: Colors.black,
+                    ),
+                  ),
                   onPressed: saveTaskAlumn,
-                  child: Text('Create'),
+                  child: Text(
+                      'Make',style: TextStyle(fontSize: 18),),
                 ),
               ],
             ),

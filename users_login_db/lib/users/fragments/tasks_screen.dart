@@ -1,11 +1,13 @@
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:users_login_db/api/api_connection.dart';
+import 'package:users_login_db/users/fragments/task_edit_form.dart';
 import 'package:users_login_db/users/fragments/task_form.dart';
 import 'package:users_login_db/users/model/task.dart';
+import 'package:users_login_db/users/model/taskAlumn.dart';
 import 'package:users_login_db/users/userPreferences/current_user.dart';
 import 'package:http/http.dart' as http;
 
@@ -13,6 +15,7 @@ class TasksScreen extends StatelessWidget {
   late CurrentUser _currentUser = Get.put(CurrentUser());
   late List<Task> tasks = [];
   late List<dynamic> taskRealized = [];
+  late Map<dynamic, dynamic> taskRealized2 = {};
 
   final String idGroup;
 
@@ -36,7 +39,14 @@ class TasksScreen extends StatelessWidget {
       if (res.statusCode == 200) {
         var data = jsonDecode(res.body);
 
-        taskRealized = data["taskId"];
+        var data2 = data["taskId"];
+
+        for(var i = 0; i < data2.length; i++) {
+          taskRealized.add(data2[i]["task_id"]);
+          taskRealized2[i] = {data2[i]["task_id"] : data2[i]["id"]};
+        }
+        print(taskRealized);
+        print(taskRealized2);
 
         if (data["success"] == true) {
           for (var i = 0; i < data["tasksData"].length; i++) {
@@ -55,7 +65,8 @@ class TasksScreen extends StatelessWidget {
   findItem(int id) {
     for(int i = 0; i < taskRealized.length; i++) {
       if(int.parse(taskRealized[i]) == id) {
-        return true;
+        print(taskRealized2[i][taskRealized[i]]);
+        return int.parse(taskRealized2[i][taskRealized[i]]);
       }
     }
     return false;
@@ -79,6 +90,8 @@ class TasksScreen extends StatelessWidget {
         builder: ((context, snapshot) {
           return Scaffold(
               appBar: AppBar(
+                centerTitle: true,
+                backgroundColor: Colors.green.shade500,
                 title: const Text("Tasks"),
                 automaticallyImplyLeading: false,
                 leading: IconButton(
@@ -93,11 +106,11 @@ class TasksScreen extends StatelessWidget {
                 child: Column(
                   children: <Widget>[
                   for (var i = 0; i < tasks.length; i++)
-                    if(dateBefore(tasks[i].date_end))
+                    if(dateBefore(tasks[i].date_end) && findItem(tasks[i].id) == false)
                       cuadro3(tasks[i], context)
                     else
-                      if(findItem(tasks[i].id))
-                        cuadro2(tasks[i], context)
+                      if(findItem(tasks[i].id) != false)
+                        cuadro2(tasks[i], findItem(tasks[i].id), context)
                       else
                         cuadro(tasks[i], context)
                 ],
@@ -109,132 +122,235 @@ class TasksScreen extends StatelessWidget {
   }
 }
 
+
 Widget cuadro3(Task task, context) {
   return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        Container(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: <Widget>[
+      Container(
+        decoration: BoxDecoration(
           color: Colors.red,
-          margin: const EdgeInsets.all(20.0),
-          padding: const EdgeInsets.all(10.0),
-          width: double.infinity,
-          height: 200,
-          child: ElevatedButton(
-            onPressed: () {
-              Fluttertoast.showToast(msg: "Task not Realized");
-            },
-            child: ListView(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              children: [
-                Text(
-                  task.title,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 25, color: Color.fromARGB(255, 255, 255, 255)),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  task.description,
-                  style: TextStyle(
-                      fontSize: 15, color: Color.fromARGB(255, 255, 255, 255)),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  task.date_end.toString().substring(0, 10),
-                  textAlign: TextAlign.end,
-                  style: TextStyle(
-                      fontSize: 20, color: Color.fromARGB(255, 255, 255, 255)),
-                ),
-              ],
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: Colors.black,
+            width: 2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 5,
+              offset: Offset(0, 3),
             ),
+          ],
+        ),
+        margin: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20.0),
+        width: double.infinity,
+        height: 200,
+        child: InkWell(
+          onTap: () {
+            Fluttertoast.showToast(msg: "You didn't make it on time. Sorry...",);
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                task.title,
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                task.description,
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(
+                    Icons.calendar_today_rounded,
+                    color: Colors.black,
+                  ),
+                  Text(
+                    task.date_end.toString().substring(0, 10),
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
-      ]);
+      ),
+    ],
+  );
 }
 
-Widget cuadro2(Task task, context) {
+
+
+Widget cuadro2(Task task, int idTaskStudent, context) {
   return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        Container(
+  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: <Widget>[
+      Container(
+        decoration: BoxDecoration(
           color: Colors.green,
-          margin: const EdgeInsets.all(20.0),
-          padding: const EdgeInsets.all(10.0),
-          width: double.infinity,
-          height: 200,
-          child: ElevatedButton(
-            onPressed: () {
-              Fluttertoast.showToast(msg: "Task realized");
-            },
-            child: ListView(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              children: [
-                Text(
-                  task.title,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 25, color: Color.fromARGB(255, 255, 255, 255)),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  task.description,
-                  style: TextStyle(
-                      fontSize: 15, color: Color.fromARGB(255, 255, 255, 255)),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  task.date_end.toString().substring(0, 10),
-                  textAlign: TextAlign.end,
-                  style: TextStyle(
-                      fontSize: 20, color: Color.fromARGB(255, 255, 255, 255)),
-                ),
-              ],
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: Colors.black,
+            width: 2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 5,
+              offset: Offset(0, 3),
             ),
+          ],
+        ),
+        margin: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20.0),
+        width: double.infinity,
+        height: 200,
+        child: InkWell(
+          onTap: () {
+            var idTaskString = task.id;
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TaskEditForm(idTask: idTaskString, idTaskStudent: idTaskStudent),
+              ),
+            );
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                task.title,
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                task.description,
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(
+                    Icons.calendar_today_rounded,
+                    color: Colors.black,
+                  ),
+                  Text(
+                    task.date_end.toString().substring(0, 10),
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
-      ]);
+      ),
+    ],
+  );
 }
+
+
 
 Widget cuadro(Task task, context) {
   return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        Container(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: <Widget>[
+      Container(
+        decoration: BoxDecoration(
           color: Colors.yellow,
-          margin: const EdgeInsets.all(20.0),
-          padding: const EdgeInsets.all(10.0),
-          width: double.infinity,
-          height: 200,
-          child: ElevatedButton(
-            onPressed: () {
-              var idTaskString = task.id;
-              Navigator.push(context, MaterialPageRoute(builder: (context) => TaskForm(idTask: idTaskString)));
-            },
-            child: ListView(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              children: [
-                Text(
-                  task.title,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 25, color: Color.fromARGB(255, 255, 255, 255)),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  task.description,
-                  style: TextStyle(
-                      fontSize: 15, color: Color.fromARGB(255, 255, 255, 255)),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  task.date_end.toString().substring(0, 10),
-                  textAlign: TextAlign.end,
-                  style: TextStyle(
-                      fontSize: 20, color: Color.fromARGB(255, 255, 255, 255)),
-                ),
-              ],
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: Colors.black,
+            width: 2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 5,
+              offset: Offset(0, 3),
             ),
+          ],
+        ),
+        margin: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20.0),
+        width: double.infinity,
+        height: 200,
+        child: InkWell(
+          onTap: () {
+            var idTaskString = task.id;
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TaskForm(idTask: idTaskString),
+              ),
+            );
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                task.title,
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                task.description,
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(
+                    Icons.calendar_today_rounded,
+                    color: Colors.black,
+                  ),
+                  Text(
+                    task.date_end.toString().substring(0, 10),
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
-      ]);
+      ),
+    ],
+  );
 }

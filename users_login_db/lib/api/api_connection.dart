@@ -1,5 +1,5 @@
 class API {
-  static const hostConnect = "http://192.168.112.1/api_user";
+  static const hostConnect = "http://192.168.16.52/api_user";
   static const hostConnectUser = "$hostConnect/user";
 
   static const validateEmail = "$hostConnect/user/validate_email.php";
@@ -8,5 +8,7 @@ class API {
   static const groups = "$hostConnect/group/groupsShow.php";
   static const tasks = "$hostConnect/task/tasksShow.php";
   static const tasksAlumnSave = "$hostConnect/task/alumnTaskSave.php";
+  static const tasksAlumnUpdate = "$hostConnect/task/alumnTaskUpdate.php";
   static const imageSave = "$hostConnect/task/imageSave.php";
+  static const getAlumnTask = "$hostConnect/task/getAlumnTask.php";
 }

@@ -17,7 +17,7 @@ $taskId = [];
 
 if($resultOfQuery->num_rows > 0) {
     while($rowFound = $resultOfQuery->fetch_assoc()) {
-        $taskId[] = $rowFound['task_id'];
+        $taskId[] = $rowFound;
     }
 }
 

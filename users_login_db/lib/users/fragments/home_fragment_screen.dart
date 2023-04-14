@@ -27,7 +27,6 @@ class HomeFragmentScreen extends StatelessWidget {
 
   Future<void> showGroups() async {
     try {
-
       int idUser = _currentUser.user.id;
 
       var res = await getData(idUser);
@@ -36,7 +35,7 @@ class HomeFragmentScreen extends StatelessWidget {
         var data = jsonDecode(res.body);
 
         if (data["success"] == true) {
-          for(var i = 0; i < data["groupsData"].length; i++) {
+          for (var i = 0; i < data["groupsData"].length; i++) {
             Group group = Group.fromJson(data["groupsData"][i]);
             grupos.add(group);
           }
@@ -48,46 +47,115 @@ class HomeFragmentScreen extends StatelessWidget {
       print("Error :: " + e.toString());
     }
   }
-
   @override
   Widget build(BuildContext context) {
     grupos = [];
-    return Center(
-      child: FutureBuilder(
-        future: showGroups(),
-        builder: ((context, snapshot) {
-          return Scaffold(
-              body: Column(
-            children: <Widget>[
-              for (var i = 0; i < grupos.length; i++) cuadro(grupos[i], context)
-            ],
-          ));
-        }),
+    return SafeArea(
+      child: Center(
+        child: FutureBuilder(
+            future: showGroups(),
+            builder: ((context, snapshot) {
+              return Scaffold(
+                resizeToAvoidBottomInset: false,
+                body: Wrap(
+                  spacing: 1.0,
+                  runSpacing: 1.0,
+                  children: <Widget>[
+                    if (grupos.length != 0)
+                      for (var i = 0; i < grupos.length; i+=2)
+                        Row(
+                          children: [
+                            cuadro(grupos[i], context),
+                            if (i+1 < grupos.length) cuadro(grupos[i+1], context),
+                          ],
+                        )
+                    else
+                      IgnorePointer(
+                        child: Container(
+                          child: const Center(
+                            child: Text(
+                              'You don\'t have any GROUP!',
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          height: 627,
+                        ),
+                      ),
+                  ],
+                ),
+              );
+            })),
       ),
     );
   }
-}
 
-Widget cuadro(Group grupo, context) {
-  return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        Container(
-          margin: const EdgeInsets.all(10.0),
-          padding: const EdgeInsets.all(10.0),
-          width: double.infinity,
-          height: 100,
-          child: ElevatedButton(
-            onPressed: () {
-              var idGroupString = grupo.id.toString();
-              Navigator.push(context, MaterialPageRoute(builder: (context) => TasksScreen(idGroup: idGroupString)));
-            },
-            child: Text(
-              grupo.name,
-              style: TextStyle(
-                  fontSize: 50, color: Color.fromARGB(255, 255, 255, 255)),
+
+  Widget cuadro(Group grupo, context) {
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Container(
+            margin: const EdgeInsets.all(24.0),
+            width: 155,
+            height: 60,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(51),
+              gradient: LinearGradient(
+                colors: [
+                  Color(0xFF0DE409),
+                  Color(0x920DE409),
+                  Color(0xFF0DE409),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.5),
+                  spreadRadius: 3,
+                  blurRadius: 5,
+                  offset: Offset(0, 3),
+                )
+              ],
+            ),
+            child: ElevatedButton(
+              onPressed: () {
+                var idGroupString = grupo.id.toString();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            TasksScreen(idGroup: idGroupString)));
+              },
+              child: Text(
+                grupo.acronym,
+                style: TextStyle(
+                    fontSize: 38,
+                    color: Color.fromARGB(255, 255, 255, 255)),
+              ),
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.transparent, backgroundColor: Colors.transparent,
+                padding: EdgeInsets.symmetric( horizontal: 40),
+                textStyle: TextStyle(
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                  side: BorderSide(
+                    color: Colors.black.withOpacity(0.5),
+                    width: 3,
+                  ),
+                ),
+                elevation: 0,
+                shadowColor: Colors.black.withOpacity(0.5),
+              ),
             ),
           ),
-        ),
-      ]);
+        ],
+    );
+  }
 }

@@ -39,7 +39,7 @@ class ProfileFragmentScreen extends StatelessWidget {
 
     if (resultResponse == "loggedOut") {
       RememberUserPrefs.removeUserInfo().then((value) {
-        Get.off(LoginScreeen());
+        Get.off(LoginScreen());
       });
     }
   }

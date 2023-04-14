@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         future: RememberUserPrefs.readUserInfo(),
         builder: (context, dataSnapShot) {
           if (dataSnapShot.data == null) {
-            return LoginScreeen();
+            return LoginScreen();
           } else {
             return DashboardOfFragments();
           }

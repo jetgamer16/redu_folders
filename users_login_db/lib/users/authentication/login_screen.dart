@@ -11,17 +11,20 @@ import 'package:users_login_db/users/userPreferences/user_preferences.dart';
 
 import '../model/user.dart';
 
-class LoginScreeen extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   @override
-  State<LoginScreeen> createState() => _LoginScreeenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreeenState extends State<LoginScreeen> {
+class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar:
-          AppBar(title: Text("Login Screen"), automaticallyImplyLeading: false),
+      AppBar(title: const Text("Sign In"),
+        automaticallyImplyLeading: false
+        ,centerTitle: true,
+        backgroundColor: Colors.green.shade500,),
       body: const MyStatefulWidget(),
     );
   }
@@ -51,6 +54,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
       if (res.statusCode == 200) {
         var data = jsonDecode(res.body);
+        print(data);
 
         if (data["success"] == true) {
           Fluttertoast.showToast(msg: "Login Successfully");
@@ -59,14 +63,15 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           await RememberUserPrefs.storeUserInfo(userInfo);
 
           Get.to(DashboardOfFragments());
-          
+
         } else {
           Fluttertoast.showToast(
               msg: "Writte correct password or email. Try Again");
         }
       }
     } catch (e) {
-      print("Error :: " + e.toString());
+      Fluttertoast.showToast(
+              msg: "Writte correct password. Try Again");
     }
   }
 
@@ -77,69 +82,84 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         child: ListView(
           children: <Widget>[
             Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(10),
-                child: const Text(
-                  'REDU',
-                  style: TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 30),
-                )),
-            Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(10),
-                child: const Text(
-                  'Sign in',
-                  style: TextStyle(fontSize: 20),
-                )),
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(10),
+              child: Image.asset(
+            "images/redulogolong.png",
+            width: 300,
+            height: 100,
+          )
+              ),
+
             Form(
                 key: formKey,
                 child: Column(
                   children: [
+
                     TextFormField(
                         controller: emailController,
-                        validator: (val) =>
-                            val == "" ? "Please write email" : null,
+                        /*validator: (val) =>
+                            val == "" ? "Please write email" : null,*/
+                        validator: (value){
+                          if (value == null || value.isEmpty) {
+                            return'Sorry, user can\'t be empty.';
+                          }
+                          return null;
+                        },
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: 'e-mail',
-                        )),
+                          labelText: 'Email',
+                        )
+                    ),
+                    SizedBox(height: 15,),
                     TextFormField(
                       controller: passwordController,
-                      validator: (val) =>
-                          val == "" ? "Please write password" : null,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Sorry, user can\'t be empty.';
+                        }
+                        return null;
+                      },
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Password',
                       ),
                       obscureText: true,
                     ),
+                    SizedBox(height: 15,),
                     Material(
                         child: ElevatedButton(
-                      child: const Text('Login'),
-                      onPressed: () {
-                        if (formKey.currentState!.validate()) {
-                          loginUserNow();
-                        }
-                      },
-                    )),
+                          child: const Text('Login',style: TextStyle(fontSize: 16)),
+                          onPressed: () {
+                            if (formKey.currentState!.validate()) {
+                              loginUserNow();
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            fixedSize: Size(450, 20),
+                            foregroundColor: Colors.white, backgroundColor: Colors.green.shade800,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(32.0),
+                            ),
+                            elevation: 5,
+                          ),
+                        )),
                   ],
                 )),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                const Text('Does not have account?'),
+                const Text('Does not have account?',style: TextStyle(fontSize: 16)),
                 TextButton(
-                  child: const Text(
-                    'Sign Up',
-                    style: TextStyle(fontSize: 20),
+                  child: const Text('Sign Up',
+                    style: TextStyle(
+                        fontSize: 20,color: Colors.green),
                   ),
                   onPressed: () {
                     Get.to(SignUpScreen());
                   },
                 )
               ],
-              mainAxisAlignment: MainAxisAlignment.center,
             ),
           ],
         ));
