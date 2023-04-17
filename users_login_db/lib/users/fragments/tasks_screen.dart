@@ -224,10 +224,11 @@ Widget cuadro2(Task task, int idTaskStudent, context) {
         child: InkWell(
           onTap: () {
             var idTaskString = task.id;
+            var dateTask = task.date_end;
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TaskEditForm(idTask: idTaskString, idTaskStudent: idTaskStudent),
+                builder: (context) => TaskEditForm(idTask: idTaskString, idTaskStudent: idTaskStudent, dateTask: dateTask),
               ),
             );
           },

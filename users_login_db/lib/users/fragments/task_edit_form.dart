@@ -15,9 +15,10 @@ import 'package:users_login_db/users/userPreferences/current_user.dart';
 class TaskEditForm extends StatefulWidget {
   final int idTask;
   final int idTaskStudent;
+  final DateTime dateTask;
 
   const TaskEditForm(
-      {super.key, required this.idTask, required this.idTaskStudent});
+      {super.key, required this.idTask, required this.idTaskStudent, required this.dateTask});
 
   @override
   _TaskEditFormState createState() => _TaskEditFormState();
@@ -118,6 +119,15 @@ class _TaskEditFormState extends State<TaskEditForm> {
     }
   }
 
+  dateBefore(DateTime date) {
+    DateTime now = new DateTime.now();
+    if(now.isAfter(date)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     print(widget.idTaskStudent);
@@ -188,8 +198,12 @@ class _TaskEditFormState extends State<TaskEditForm> {
                     ),
                   ),
                   onPressed: (){
-                    if(mark=="Not Corrected") {
+                    if(dateBefore(widget.dateTask) && mark=="Not Corrected") {
+                      Fluttertoast.showToast(msg: "The time limit has passed");
+                    } else if(mark=="Not Corrected") {
                       saveTaskAlumn();
+                    } else {
+                      Fluttertoast.showToast(msg: "The task has been corrected");
                     }
                   },
                   child: Text(
