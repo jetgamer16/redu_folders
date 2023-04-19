@@ -11,4 +11,5 @@ class API {
   static const tasksAlumnUpdate = "$hostConnect/task/alumnTaskUpdate.php";
   static const imageSave = "$hostConnect/task/imageSave.php";
   static const getAlumnTask = "$hostConnect/task/getAlumnTask.php";
+  static const profilePhoto = "$hostConnect/user/profilePhoto.php";
 }

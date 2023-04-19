@@ -1,8 +1,87 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:users_login_db/api/api_connection.dart';
 import 'package:users_login_db/users/authentication/login_screen.dart';
 import 'package:users_login_db/users/userPreferences/current_user.dart';
 import 'package:users_login_db/users/userPreferences/user_preferences.dart';
+import 'package:http/http.dart' as http;
+
+class ProfilePicture extends StatefulWidget {
+  final double size;
+
+  ProfilePicture({required this.size});
+
+  @override
+  _ProfilePictureState createState() => _ProfilePictureState();
+}
+
+class _ProfilePictureState extends State<ProfilePicture> {
+  final CurrentUser _currentUser = Get.put(CurrentUser());
+  File? _image;
+  late String? _imageFile = '';
+
+
+  Future<void> _getImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+    setState(() {
+      _image = File(pickedFile!.path);
+    });
+
+    final uri = Uri.parse(API.profilePhoto);
+    var request = http.MultipartRequest('POST', uri);
+    request.fields['id'] = _currentUser.user.id.toString();
+    var pic = await http.MultipartFile.fromPath("image", _image!.path);
+    request.files.add(pic);
+    var response = await request.send();
+
+    if(response.statusCode == 200) {
+      print('image Uploaded');
+    } else {
+      print('image not Uploaded');
+    }
+
+  }
+
+  showImage() {
+    
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: _getImage,
+      child: Container(
+        width: widget.size,
+        height: widget.size,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          image: _image != null
+              ? DecorationImage(
+            image: FileImage(_image!),
+            fit: BoxFit.cover,
+          )
+              : null,
+          border: Border.all(
+            color: Colors.grey.shade400,
+            width: 2.0,
+          ),
+        ),
+        child: _image == null
+            ? Icon(
+          Icons.person,
+          size: widget.size / 2,
+          color: Colors.grey.shade400,
+        )
+            : null,
+      ),
+    );
+  }
+}
+
+
 
 class ProfileFragmentScreen extends StatelessWidget {
   final CurrentUser _currentUser = Get.put(CurrentUser());
@@ -76,9 +155,8 @@ class ProfileFragmentScreen extends StatelessWidget {
       padding: const EdgeInsets.all(32),
       children: [
         Center(
-          child: Image.asset(
-            "images/man.png",
-            width: 240,
+          child:  ProfilePicture(
+            size: 240.0,
           ),
         ),
         const SizedBox(
@@ -117,4 +195,5 @@ class ProfileFragmentScreen extends StatelessWidget {
       ],
     );
   }
+
 }
