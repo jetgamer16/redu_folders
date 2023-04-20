@@ -43,6 +43,19 @@ class _ProfilePictureState extends State<ProfilePicture> {
       print('image not Uploaded');
     }
 
+    final uri2 = Uri.parse(API.profilePhoto2);
+    var request2 = http.MultipartRequest('POST', uri2);
+    request2.fields['id'] = _currentUser.user.id.toString();
+    var pic2 = await http.MultipartFile.fromPath("image", _image!.path);
+    request2.files.add(pic2);
+    var response2 = await request2.send();
+
+    if(response.statusCode == 200) {
+      print('image Uploaded');
+    } else {
+      print('image not Uploaded');
+    }
+
   }
 
   showImage() {
