@@ -29,6 +29,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
     setState(() {
       _image = File(pickedFile!.path);
     });
+    print(pickedFile!.path);
 
     final uri = Uri.parse(API.profilePhoto);
     var request = http.MultipartRequest('POST', uri);
@@ -58,12 +59,9 @@ class _ProfilePictureState extends State<ProfilePicture> {
 
   }
 
-  showImage() {
-    
-  }
-
   @override
   Widget build(BuildContext context) {
+    var id = _currentUser.user.id;
     return GestureDetector(
       onTap: _getImage,
       child: Container(
@@ -71,24 +69,15 @@ class _ProfilePictureState extends State<ProfilePicture> {
         height: widget.size,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          image: _image != null
-              ? DecorationImage(
-            image: FileImage(_image!),
+          image: DecorationImage(
+            image: Image.asset("profileImg/$id-userPP.jpg").image,
             fit: BoxFit.cover,
-          )
-              : null,
+          ),
           border: Border.all(
             color: Colors.grey.shade400,
             width: 2.0,
           ),
         ),
-        child: _image == null
-            ? Icon(
-          Icons.person,
-          size: widget.size / 2,
-          color: Colors.grey.shade400,
-        )
-            : null,
       ),
     );
   }

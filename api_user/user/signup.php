@@ -11,8 +11,26 @@ $sqlQuery = "INSERT INTO users SET name = '$userName', email = '$userEmail', pas
 
 $resultOfQuery = $connectNow->query($sqlQuery);
 
+$user = [];
+
 if($resultOfQuery) {
-    echo 'success';
+    $sqlQuery2 = "SELECT * FROM users WHERE name = '$userName' AND email = '$userEmail'";
+
+    $resultOfQuery2 = $connectNow->query($sqlQuery2);
+
+    while($rowFound = $resultOfQuery2->fetch_assoc()) {
+        $user[] = $rowFound;
+    }
+    echo json_encode(
+        array(
+            'success' => true,
+            'user' => $user[0]
+        )
+    );
 } else {
-    echo 'notSuccess';
+    echo json_encode(
+        array(
+            'success' => false,
+        )
+    );
 }
