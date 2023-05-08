@@ -166,7 +166,9 @@ class _TaskFormState extends State<TaskForm> {
                 SizedBox(height: 16.0),
                 ElevatedButton(
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.black,backgroundColor: Colors.green.shade500, side: BorderSide(width: 2,
+                    foregroundColor: Colors.black,backgroundColor: 
+                    Colors.green.shade500, 
+                    side: BorderSide(width: 2,
                       color: Colors.black,
                     ),
                   ),

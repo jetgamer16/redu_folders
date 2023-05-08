@@ -98,8 +98,8 @@ class HomeFragmentScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Container(
-            margin: const EdgeInsets.all(24.0),
-            width: 155,
+            margin: const EdgeInsets.all(22.0),
+            width: 150,
             height: 60,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(51),

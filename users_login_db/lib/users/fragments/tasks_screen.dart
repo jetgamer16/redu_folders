@@ -106,7 +106,8 @@ class TasksScreen extends StatelessWidget {
                 child: Column(
                   children: <Widget>[
                   for (var i = 0; i < tasks.length; i++)
-                    if(dateBefore(tasks[i].date_end) && findItem(tasks[i].id) == false)
+                    if(dateBefore(tasks[i].date_end) &&
+                     findItem(tasks[i].id) == false)
                       cuadro3(tasks[i], context)
                     else
                       if(findItem(tasks[i].id) != false)

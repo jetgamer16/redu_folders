@@ -10,7 +10,9 @@ $mark = $_POST["mark"];
 $feedback = $_POST["feedback"];
 $now = Date("Y-m-d H:i:s");
 
-$sqlQuery = "INSERT INTO student_tasks SET name = '$name', description = '$description', img = '$img', student_id = $student_id, task_id = $task_id, mark = $mark, feedback = '$feedback', created_at = '$now', updated_at = '$now'";
+$sqlQuery = "INSERT INTO student_tasks SET name = '$name', description = '$description', 
+img = '$img', student_id = $student_id, task_id = $task_id, mark = $mark, 
+feedback = '$feedback', created_at = '$now', updated_at = '$now'";
 
 $resultOfQuery = $connectNow->query($sqlQuery);
 
@@ -18,7 +20,8 @@ $task = [];
 
 if($resultOfQuery) {
 
-    $sqlQuery2 = "SELECT * FROM student_tasks WHERE name = '$name' AND student_id = $student_id AND task_id = $task_id";
+    $sqlQuery2 = "SELECT * FROM student_tasks WHERE name = '$name' AND 
+    student_id = $student_id AND task_id = $task_id";
 
     $resultOfQuery2 = $connectNow->query($sqlQuery2);
 
