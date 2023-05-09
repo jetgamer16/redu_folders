@@ -52,11 +52,12 @@ class HomeFragmentScreen extends StatelessWidget {
     grupos = [];
     return SafeArea(
       child: Center(
+
         child: FutureBuilder(
             future: showGroups(),
             builder: ((context, snapshot) {
               return Scaffold(
-                resizeToAvoidBottomInset: false,
+                resizeToAvoidBottomInset: true,
                 body: Wrap(
                   spacing: 1.0,
                   runSpacing: 1.0,
@@ -98,7 +99,7 @@ class HomeFragmentScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Container(
-            margin: const EdgeInsets.all(22.0),
+            margin: const EdgeInsets.all(18.0),
             width: 150,
             height: 60,
             decoration: BoxDecoration(

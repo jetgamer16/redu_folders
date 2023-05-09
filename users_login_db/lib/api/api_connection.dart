@@ -1,5 +1,6 @@
 class API {
-  static const hostConnect = "http://192.168.16.52/api_user";
+  //static const hostConnect = "http://192.168.16.52/api_user";
+  static const hostConnect = "https://ddaw-pau.000webhostapp.com/api_user";
   static const hostConnectUser = "$hostConnect/user";
 
   static const validateEmail = "$hostConnect/user/validate_email.php";
